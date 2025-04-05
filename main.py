@@ -1,13 +1,13 @@
-from PyQt6 import QtCore
-from Image import CImage
-
+from PyQt6 import QtWidgets
+from UserInterface import CMainWindow, CApp
+import sys
 
 def main():
-    testImage = CImage('C:/Users/fenri/PycharmProjects/KP_ImageResize/res/321.png')
-    testImage.setNeededSize(250,75)
-    testImage.resize()
-    testImage.saveImage()
-    print(testImage.getFileName())
+    app = CApp(sys.argv)
+    QtWidgets.QApplication = app
+    mainWindow = CMainWindow()
+    mainWindow.show()
+    sys.exit(app.exec())
 
 
 if __name__ == '__main__':

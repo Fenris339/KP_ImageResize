@@ -1,6 +1,7 @@
 import os
+import re
 
-from PIL import Image
+from PIL import Image, ImageQt
 import numpy as np
 
 
@@ -9,20 +10,31 @@ class CImage:
         self._path = path
 
         if self._path and os.path.exists(self._path):
-            image = Image.open(path)
-            self._fileName = self._path.split('/')[-1]
-            self._sourceImageMatrix = np.array(image)
+            self._image = Image.open(self._path)
+            self._fileName = re.split(r'[\\/]', self._path)[-1]
+            self._sourceImageMatrix = np.array(self._image)
         else:
             self._sourceImageMatrix = None
 
         if self._sourceImageMatrix is not None:
             self._sourceHeight, self._sourceWidth, self._channels = self._sourceImageMatrix.shape
+            self._qImage = ImageQt.ImageQt(self._image)
+            self._pixmap = ImageQt.QPixmap.fromImage(ImageQt.QImage(self._qImage))
 
         self._destinationHeight = 0
         self._destinationWidth = 0
 
         self._imageIdent = True
 
+
+    def getImage(self):
+        return self._image
+
+    def getPixmap(self):
+        return self._pixmap
+
+    def getQImage(self):
+        return self._qImage
 
     def getFileName(self):
         return self._fileName
