@@ -41,13 +41,13 @@ class CMainWindow(QMainWindow, Ui_MainWindow):
             destinationWidth = self.edtDirectionWidth.value()
             destinationHeight = self.edtDirectionHeight.value()
             if destinationWidth and destinationHeight:
-                if self.chkDirectionSizeToAll.checkState().value == Qt.CheckState.Unchecked:
+                if self.chkDirectionSizeToAll.checkState() == Qt.CheckState.Unchecked:
                     image.setNeededSize(destinationWidth, destinationHeight)
                 else:
                     imageList = self.tblImages.model().getImage()
                     for img in imageList:
                         img.setNeededSize(destinationWidth, destinationHeight)
-                self.tblImages.update()
+                self.tblImages.viewport().update()
             else:
                 QMessageBox.information(self, "Внимание!", "Не задана необходимая высота или ширина!")
 
