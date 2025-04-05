@@ -1,7 +1,9 @@
 from PyQt6 import QtCore
 
+
 def getImages():
     pass
+
 
 def main():
     pass
@@ -9,4 +11,3 @@ def main():
 
 if __name__ == '__main__':
     pass
-
