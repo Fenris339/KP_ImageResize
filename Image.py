@@ -6,11 +6,11 @@ import numpy as np
 
 class CImage:
     def __init__(self, path):
-        self.path = path
+        self._path = path
 
-        if self.path and os.path.exists(self.path):
+        if self._path and os.path.exists(self._path):
             image = Image.open(path)
-            self._fileName = self.path.split('/')[-1]
+            self._fileName = self._path.split('/')[-1]
             self._sourceImageMatrix = np.array(image)
         else:
             self._sourceImageMatrix = None
@@ -18,35 +18,43 @@ class CImage:
         if self._sourceImageMatrix is not None:
             self._sourceHeight, self._sourceWidth, self._channels = self._sourceImageMatrix.shape
 
-        self.destinationHeight = 0
-        self.destinationWidth = 0
+        self._destinationHeight = 0
+        self._destinationWidth = 0
 
-        self.imageIdent = True
+        self._imageIdent = True
 
 
     def getFileName(self):
         return self._fileName
 
+    def getSourceSize(self):
+        return self._sourceHeight, self._sourceWidth
+
+    def getDestinationSize(self):
+        return self._destinationHeight, self._destinationWidth
+
+    def getFilePath(self):
+        return self._path
 
     def setNeededSize(self, width, height):
         if (self._sourceWidth != width or self._sourceHeight != height) and (self._sourceWidth and self._sourceHeight):
-            self.destinationWidth = width
-            self.destinationHeight = height
-            self.imageIdent = False
+            self._destinationWidth = width
+            self._destinationHeight = height
+            self._imageIdent = False
 
 
     def resize(self):
-        if self.imageIdent:
+        if self._imageIdent:
             return
 
-        scaleX = (self._sourceWidth - 1) / (self.destinationWidth - 1)
-        scaleY = (self._sourceHeight - 1) / (self.destinationHeight - 1)
+        scaleX = (self._sourceWidth - 1) / (self._destinationWidth - 1)
+        scaleY = (self._sourceHeight - 1) / (self._destinationHeight - 1)
 
-        self.destinationImageMatrix = np.empty((self.destinationHeight, self.destinationWidth, self._channels),
+        self.destinationImageMatrix = np.empty((self._destinationHeight, self._destinationWidth, self._channels),
                                                dtype=self._sourceImageMatrix.dtype)
 
-        for destinationY in range(self.destinationHeight):
-            for destinationX in range(self.destinationWidth):
+        for destinationY in range(self._destinationHeight):
+            for destinationX in range(self._destinationWidth):
                 sourceX = destinationX * scaleX
                 sourceY = destinationY * scaleY
 
@@ -57,10 +65,10 @@ class CImage:
 
 
     def saveImage(self):
-        if self.imageIdent:
+        if self._imageIdent:
             return
         newImage = Image.fromarray(self.destinationImageMatrix)
-        newImage.save(self.path)
+        newImage.save(self._path)
 
 
     @staticmethod
