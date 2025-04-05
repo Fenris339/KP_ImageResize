@@ -41,7 +41,7 @@ class CMainWindow(QMainWindow, Ui_MainWindow):
             destinationWidth = self.edtDirectionWidth.value()
             destinationHeight = self.edtDirectionHeight.value()
             if destinationWidth and destinationHeight:
-                if not bool(self.chkDirectionSizeToAll.checkState().value):
+                if self.chkDirectionSizeToAll.checkState().value == Qt.CheckState.Unchecked:
                     image.setNeededSize(destinationWidth, destinationHeight)
                 else:
                     imageList = self.tblImages.model().getImage()
