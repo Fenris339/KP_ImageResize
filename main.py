@@ -1,12 +1,12 @@
 from PyQt6 import QtCore
-from image import CImage
-
-def getImages():
-    pass
+from Image import CImage
 
 
 def main():
-    testImage = CImage('./res/icon.ico')
+    testImage = CImage('C:/Users/fenri/PycharmProjects/KP_ImageResize/res/321.png')
+    testImage.setNeededSize(300,300)
+    testImage.resize()
+    testImage.saveImage()
     testImage.testPrint()
 
 
