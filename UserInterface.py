@@ -29,11 +29,35 @@ class CMainWindow(QMainWindow, Ui_MainWindow):
         self._saveState.dirtyChanged.connect(self.btnSave.setEnabled)
         self.btnFilesOrDirectory.clicked.connect(self.selectFilesOrDirectory)
         self.btnSaveDirectionSize.clicked.connect(self.saveDirectionSize)
+        self.btnSave.clicked.connect(self.saveChanges)
+        self.chkDirectionSizeToAll.setCheckState(Qt.CheckState.Checked)
+
+
+    def saveChanges(self):
+
+        def on_saveProccesing_finished(isSaved):
+            if isSaved:
+                QMessageBox.information(self, "Внимание!", "Изменения успешно сохранены!")
+                self._saveState.dirty = False
+                if self.chkDirectionSizeToAll.checkState() == Qt.CheckState.Unchecked:
+                    self.progressBar.setEnabled(False)
+            else:
+                QMessageBox.information(self, "Внимание!", "Нет изменений для сохранения!")
+                self._saveState.dirty = False
+                if self.chkDirectionSizeToAll.checkState() == Qt.CheckState.Unchecked:
+                    self.progressBar.setEnabled(False)
+
+        self.progressBar.setEnabled(True)
+
+        self.saveWorker = CImageProcessor('saver', self.tblImages.model().getImage())
+        self.saveWorker.progressChanged.connect(self.progressBar.setValue)
+        self.saveWorker.saveProcessingFinished.connect(on_saveProccesing_finished)
+        self.saveWorker.start()
 
 
     def saveDirectionSize(self):
 
-        def on_processing_finished(result, row):
+        def on_resizeProcessing_finished(result, row):
             if True in result:
                 self._saveState.dirty = True
                 self.updateImgView(image[row])
@@ -54,12 +78,12 @@ class CMainWindow(QMainWindow, Ui_MainWindow):
                     image[row].setNeededSize(destinationWidth, destinationHeight)
                     image[row].resize()
                     result.append(image[row].resize())
-                    on_processing_finished(result, row)
+                    on_resizeProcessing_finished(result, row)
                 else:
-                    self.worker = CImageProcessor('resizer', image, destinationWidth, destinationHeight, row)
-                    self.worker.progressChanged.connect(self.progressBar.setValue)
-                    self.worker.processingFinished.connect(on_processing_finished)
-                    self.worker.start()
+                    self.resizeWorker = CImageProcessor('resizer', image, destinationWidth, destinationHeight, row)
+                    self.resizeWorker.progressChanged.connect(self.progressBar.setValue)
+                    self.resizeWorker.resizeProcessingFinished.connect(on_resizeProcessing_finished)
+                    self.resizeWorker.start()
             else:
                 QMessageBox.information(self, "Внимание!", "Не задана необходимая высота или ширина!")
 
@@ -120,7 +144,8 @@ class CMainWindow(QMainWindow, Ui_MainWindow):
 
 class CImageProcessor(QThread):
     progressChanged = pyqtSignal(int)
-    processingFinished = pyqtSignal(list, int)
+    resizeProcessingFinished = pyqtSignal(list, int)
+    saveProcessingFinished = pyqtSignal(bool)
 
     def __init__(self, type, images, width=None, height=None, row=None):
         super().__init__()
@@ -130,6 +155,7 @@ class CImageProcessor(QThread):
         self.height = height
         self.row = row
         self._result = []
+        self._isSaved = False
 
     def run(self):
         if self.type == 'saver':
@@ -138,7 +164,15 @@ class CImageProcessor(QThread):
             self.resizer()
 
     def saver(self):
-        pass
+        total = len(self.images)
+        for i, img in enumerate(self.images):
+            if img.saveImage():
+                self.isSaved=True
+
+            percent = int((i + 1) * 100 / total)
+            self.progressChanged.emit(percent)
+
+        self.saveProcessingFinished.emit(self.isSaved)
 
     def resizer(self):
         total = len(self.images)
@@ -149,7 +183,7 @@ class CImageProcessor(QThread):
             percent = int((i + 1) * 100 / total)
             self.progressChanged.emit(percent)
 
-        self.processingFinished.emit(self.result, self.startRow)
+        self.resizeProcessingFinished.emit(self.result, self.startRow)
 
     @property
     def result(self):
@@ -162,6 +196,14 @@ class CImageProcessor(QThread):
     @property
     def startRow(self):
         return self.row
+
+    @property
+    def isSaved(self):
+        return self._isSaved
+
+    @isSaved.setter
+    def isSaved(self, value):
+        self._isSaved = value
 
 
 class CDirtyManager(QObject):

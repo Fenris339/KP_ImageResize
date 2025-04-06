@@ -3,7 +3,6 @@ import re
 
 from PIL import Image, ImageQt
 import numpy as np
-from PIL.ImageCms import profileToProfile
 
 
 class CImage:
@@ -104,10 +103,10 @@ class CImage:
 
     def saveImage(self):
         if self._imageIdent:
-            return
+            return False
         newImage = Image.fromarray(self.destinationImageMatrix)
         newImage.save(self._path)
-
+        return True
 
     @staticmethod
     def clamp(value, minimum, maximum):
