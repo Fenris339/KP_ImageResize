@@ -3,6 +3,7 @@ import re
 
 from PIL import Image, ImageQt
 import numpy as np
+from PIL.ImageCms import profileToProfile
 
 
 class CImage:
@@ -10,16 +11,19 @@ class CImage:
         self._path = path
 
         if self._path and os.path.exists(self._path):
-            self._image = Image.open(self._path)
+            self._sourceImage = Image.open(self._path)
+            self._image = self._sourceImage
             self._fileName = re.split(r'[\\/]', self._path)[-1]
-            self._sourceImageMatrix = np.array(self._image)
+            self._sourceImageMatrix = np.array(self._sourceImage)
         else:
             self._sourceImageMatrix = None
 
         if self._sourceImageMatrix is not None:
             self._sourceHeight, self._sourceWidth, self._channels = self._sourceImageMatrix.shape
-            self._qImage = ImageQt.ImageQt(self._image)
-            self._pixmap = ImageQt.QPixmap.fromImage(ImageQt.QImage(self._qImage))
+            self._sourceQImage = ImageQt.ImageQt(self._sourceImage)
+            self._sourcePixmap = ImageQt.QPixmap.fromImage(ImageQt.QImage(self._sourceQImage))
+            self._qImage = self._sourceQImage
+            self._pixmap = self._sourcePixmap
 
         self._destinationHeight = 0
         self._destinationWidth = 0
@@ -27,26 +31,42 @@ class CImage:
         self._imageIdent = True
 
 
-    def getImage(self):
+    @property
+    def image(self):
         return self._image
 
-    def getPixmap(self):
+    @property
+    def sourceImage(self):
+        return self._sourceImage
+
+    @property
+    def pixmap(self):
         return self._pixmap
 
-    def getQImage(self):
+    @property
+    def qImage(self):
         return self._qImage
 
-    def getFileName(self):
+    @property
+    def sourcePixmap(self):
+        return self._sourcePixmap
+
+    @property
+    def sourceQImage(self):
+        return self._sourceQImage
+
+    @property
+    def fileName(self):
         return self._fileName
 
-    def getSourceSize(self):
+    @property
+    def sourceSize(self):
         return self._sourceHeight, self._sourceWidth
 
-    def getDestinationSize(self):
+    @property
+    def destinationSize(self):
         return self._destinationHeight, self._destinationWidth
 
-    def getFilePath(self):
-        return self._path
 
     def setNeededSize(self, width, height):
         if (self._sourceWidth != width or self._sourceHeight != height) and (self._sourceWidth and self._sourceHeight):
@@ -57,10 +77,10 @@ class CImage:
 
     def resize(self):
         if self._imageIdent:
-            return
+            return False
 
-        scaleX = (self._sourceWidth - 1) / (self._destinationWidth - 1)
-        scaleY = (self._sourceHeight - 1) / (self._destinationHeight - 1)
+        scaleX = (self._sourceWidth - 1) / (self._destinationWidth - (1 if self._destinationWidth>1 else 0))
+        scaleY = (self._sourceHeight - 1) / (self._destinationHeight - (1 if self._destinationHeight>1 else 0))
 
         self.destinationImageMatrix = np.empty((self._destinationHeight, self._destinationWidth, self._channels),
                                                dtype=self._sourceImageMatrix.dtype)
@@ -74,6 +94,12 @@ class CImage:
                 sourceY_rounded = self.clamp(round(sourceY), 0, self._sourceHeight - 1)
 
                 self.destinationImageMatrix[destinationY, destinationX] = self._sourceImageMatrix[sourceY_rounded, sourceX_rounded]
+
+        self._image = Image.fromarray(self.destinationImageMatrix)
+        self._qImage = ImageQt.ImageQt(self._image)
+        self._pixmap = ImageQt.QPixmap.fromImage(ImageQt.QImage(self._qImage))
+
+        return True
 
 
     def saveImage(self):

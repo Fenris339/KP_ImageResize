@@ -93,34 +93,62 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0" colspan="3">
-        <widget class="QGraphicsView" name="imgView">
+       <item row="4" column="1">
+        <widget class="QFrame" name="frame_4">
          <property name="frameShape">
           <enum>QFrame::Box</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
+          <enum>QFrame::Raised</enum>
          </property>
-         <property name="lineWidth">
-          <number>1</number>
-         </property>
-         <property name="interactive">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0" colspan="3">
-        <widget class="QProgressBar" name="progressBar">
-         <property name="value">
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_5">
-         <property name="text">
-          <string>Исходный размер:</string>
-         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Ширина:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="edtDirectionHeight">
+            <property name="maximum">
+             <number>3000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="edtDirectionWidth">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximum">
+             <number>3000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Высота:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item row="4" column="0">
@@ -187,68 +215,36 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QFrame" name="frame_4">
+       <item row="0" column="0" colspan="3">
+        <widget class="QGraphicsView" name="imgView">
          <property name="frameShape">
           <enum>QFrame::Box</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
+          <enum>QFrame::Plain</enum>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Ширина:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="edtDirectionHeight">
-            <property name="maximum">
-             <number>3000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="edtDirectionWidth">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximum">
-             <number>3000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Высота:</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
+         <property name="interactive">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QPushButton" name="btnSaveDirectionSize">
+       <item row="7" column="0" colspan="3">
+        <widget class="QProgressBar" name="progressBar">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>Задать размер</string>
+          <string>Исходный размер:</string>
          </property>
         </widget>
        </item>
@@ -275,17 +271,27 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
-        <widget class="QCheckBox" name="chkDirectionSizeToAll">
+       <item row="8" column="1">
+        <widget class="QPushButton" name="btnSave">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
-          <string>Задать единный размер</string>
+          <string>Сохранить все изменения</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
-        <widget class="QPushButton" name="btnStart">
+       <item row="5" column="1">
+        <widget class="QPushButton" name="btnSaveDirectionSize">
          <property name="text">
-          <string>Запустить</string>
+          <string>Задать размер</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="2" rowspan="3">
+        <widget class="QCheckBox" name="chkDirectionSizeToAll">
+         <property name="text">
+          <string>Задать единный размер для всех</string>
          </property>
         </widget>
        </item>
@@ -307,5 +313,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>chkDirectionSizeToAll</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>progressBar</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1126</x>
+     <y>509</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>929</x>
+     <y>629</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
